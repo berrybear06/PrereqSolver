@@ -3,7 +3,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  output: 'export'
+  output: 'export',
+  basePath: '/PrereqSolver',
+  images: { unoptimized: true }
 }
 
 export default nextConfig
