@@ -38,7 +38,7 @@ public class Server {
             });
         }).start(port);
 
-        System.out.println("Javalin server started with CORS enabled.")
+        System.out.println("Javalin server started on port " + port + " with CORS enabled.");
 
         app.post("/", ctx -> handleRequest(ctx, data));
     }
