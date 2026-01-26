@@ -7,6 +7,8 @@ import java.util.Set;
 
 public class Server {
 
+    private static final String ORIGIN_URL = "https://wynnshu.github.io";
+
     // Define the JSON request structure
     private static class RequestData {
         public String targetCourse;
@@ -28,7 +30,13 @@ public class Server {
         // Cloud Run injects the PORT environment variable
         int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
 
-        Javalin app = Javalin.create().start(port);
+        Javalin app = Javalin.create(config -> {
+            config.bundledPlugins.enableCors(cors -> {
+                cors.addRule(it -> {
+                    it.allowHost(ORIGIN_URL);
+                });
+            });
+        }).start(port);
 
         app.post("/", ctx -> handleRequest(ctx, data));
     }
