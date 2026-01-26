@@ -1,8 +1,8 @@
-package prereqsolver;
+package prereqsolver.pipeline;
 
 import java.io.*;
-import java.nio.file.*;
 import java.util.*;
+import prereqsolver.runtime.TokenType;
 
 /**
  * Processes Cornell course catalog through multiple phases:

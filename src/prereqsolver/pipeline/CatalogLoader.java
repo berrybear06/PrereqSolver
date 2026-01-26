@@ -1,4 +1,4 @@
-package prereqsolver;
+package prereqsolver.pipeline;
 
 import java.io.*;
 import java.nio.file.*;

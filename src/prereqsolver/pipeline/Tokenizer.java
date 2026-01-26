@@ -1,7 +1,8 @@
-package prereqsolver;
+package prereqsolver.pipeline;
 
 import java.util.*;
 import java.util.regex.*;
+import prereqsolver.runtime.TokenType;
 
 /**
  * Tokenizer for prerequisite strings.

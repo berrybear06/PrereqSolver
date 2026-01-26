@@ -1,4 +1,4 @@
-package prereqsolver;
+package prereqsolver.runtime;
 
 /**
  * Parses token strings from the corrected TSV into Requirement ASTs.

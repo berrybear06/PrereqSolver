@@ -1,6 +1,7 @@
-package prereqsolver;
+package prereqsolver.runtime;
 
 import java.util.Set;
+import prereqsolver.runtime.TokenType;
 
 /**
  * A compound expression connecting two Requirements with logic (AND / OR).

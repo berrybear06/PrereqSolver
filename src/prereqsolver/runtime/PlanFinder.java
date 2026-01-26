@@ -1,4 +1,4 @@
-package prereqsolver;
+package prereqsolver.runtime;
 
 import java.io.*;
 import java.util.*;
@@ -14,6 +14,51 @@ public class PlanFinder {
     public PlanFinder(PrereqData data, Set<String> takenCourses) {
         this.data = data;
         this.takenCourses = new HashSet<>(takenCourses);
+        expandTakenCourses();
+    }
+
+    /**
+     * Recursively mark all prereqs of taken courses as "effectively taken".
+     * If you've taken CS 2110, you must have satisfied its prereqs somehow,
+     * so we don't need to explore those paths.
+     */
+    private void expandTakenCourses() {
+        Set<String> original = new HashSet<>(takenCourses);
+        for (String course : original) {
+            addAllPrereqs(course);
+        }
+    }
+
+    /**
+     * Get prereq tree for a course and add all nodes to takenCourses.
+     */
+    private void addAllPrereqs(String course) {
+        Requirement prereqs = data.getRequirement(course);
+        if (prereqs == null) return;
+        addAllFromTree(prereqs);
+    }
+
+    /**
+     * Walk the requirement tree and add all courses/specials to takenCourses.
+     * Skips PERMISSION nodes since those are course-specific.
+     */
+    private void addAllFromTree(Requirement req) {
+        if (req instanceof Unit unit) {
+            String content = unit.getContent();
+
+            // Skip permission nodes — they're course-specific
+            if (content.startsWith("PERMISSION")) {
+                return;
+            }
+
+            if (!takenCourses.contains(content)) {
+                takenCourses.add(content);
+                addAllPrereqs(content);  // Recurse into this course's prereqs
+            }
+        } else if (req instanceof Expression expr) {
+            addAllFromTree(expr.getLeft());
+            addAllFromTree(expr.getRight());
+        }
     }
 
     /**
@@ -206,7 +251,7 @@ public class PlanFinder {
 
         try {
             PrereqData data = new PrereqData(tsvFile);
-            Set<String> taken = Set.of("MATH 2220");
+            Set<String> taken = Set.of("MATH 2220", "CS 2110");
             PlanFinder finder = new PlanFinder(data, taken);
 
             String[] testCourses = {"CS 3110", "CS 4820", "MATH 4710"};

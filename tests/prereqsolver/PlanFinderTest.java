@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.*;
+import prereqsolver.runtime.Plan;
+import prereqsolver.runtime.PlanFinder;
+import prereqsolver.runtime.PrereqData;
 
 /**
  * Comprehensive tests for PlanFinder.

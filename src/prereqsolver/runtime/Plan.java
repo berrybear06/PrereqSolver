@@ -1,4 +1,4 @@
-package prereqsolver;
+package prereqsolver.runtime;
 
 import java.util.*;
 
