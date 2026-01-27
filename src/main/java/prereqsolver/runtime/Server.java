@@ -1,4 +1,4 @@
-package prereqsolver;
+package prereqsolver.runtime;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
