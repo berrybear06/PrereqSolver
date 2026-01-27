@@ -161,33 +161,26 @@ public class PlanFinder {
                 return result;
             }
 
-            // Neither satisfied — explore both as alternatives
+            // Check if either immediate child is a SPECIAL/PERMISSION Unit
+            boolean leftIsSpecial = isDirectSpecial(expr.getLeft());
+            boolean rightIsSpecial = isDirectSpecial(expr.getRight());
+
+            // If one side is direct SPECIAL and other is not, only explore non-SPECIAL
+            if (leftIsSpecial && !rightIsSpecial) {
+                return getPlans(expr.getRight(), alreadyPlanned);
+            }
+            if (rightIsSpecial && !leftIsSpecial) {
+                return getPlans(expr.getLeft(), alreadyPlanned);
+            }
+
+            // Either both are SPECIAL, or neither is — explore both
             Set<Plan> leftPlans = getPlans(expr.getLeft(), alreadyPlanned);
             Set<Plan> rightPlans = getPlans(expr.getRight(), alreadyPlanned);
 
             Set<Plan> result = new HashSet<>();
             result.addAll(leftPlans);
             result.addAll(rightPlans);
-
-            // Filter out SPECIAL/PERMISSION paths if real course paths exist
-            Set<Plan> realCoursePlans = new HashSet<>();
-            Set<Plan> specialPlans = new HashSet<>();
-
-            for (Plan plan : result) {
-                boolean hasSpecial = plan.getCourseSet().stream()
-                        .anyMatch(c -> c.startsWith("SPECIAL") || c.startsWith("PERMISSION"));
-                if (hasSpecial) {
-                    specialPlans.add(plan);
-                } else {
-                    realCoursePlans.add(plan);
-                }
-            }
-
-            // Prefer real course plans; only use special plans if no real ones exist
-            if (!realCoursePlans.isEmpty()) {
-                return realCoursePlans;
-            }
-            return specialPlans;
+            return result;
         }
 
         if (expr.getOperator() == TokenType.AND) {
@@ -221,6 +214,17 @@ public class PlanFinder {
     }
 
     /**
+     * Check if a requirement is a direct SPECIAL or PERMISSION unit.
+     */
+    private boolean isDirectSpecial(Requirement req) {
+        if (req instanceof Unit unit) {
+            String content = unit.getContent();
+            return content.startsWith("SPECIAL") || content.startsWith("PERMISSION");
+        }
+        return false;
+    }
+
+    /**
      * Check if a requirement is already satisfied by planned courses.
      */
     private boolean isAlreadySatisfied(Requirement requirement, Set<String> alreadyPlanned) {
@@ -251,10 +255,10 @@ public class PlanFinder {
 
         try {
             PrereqData data = new PrereqData(tsvFile);
-            Set<String> taken = Set.of("MATH 2220", "CS 2110");
+            Set<String> taken = Set.of();
             PlanFinder finder = new PlanFinder(data, taken);
 
-            String[] testCourses = {"CS 3110", "CS 4820", "MATH 4710"};
+            String[] testCourses = {"CS 4701", "CS 3780", "MATH 4710"};
 
             for (String target : testCourses) {
                 System.out.println("\n========================================");
