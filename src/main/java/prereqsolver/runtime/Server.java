@@ -52,8 +52,7 @@ public class Server {
             PlanFinder finder = new PlanFinder(data, request.takenCourses);
             List<Plan> plans = finder.findPlans(request.targetCourse);
             
-            // Extract course sets from plans for cleaner output
-            ctx.json(plans.stream().map(Plan::getCourseSet).toList());
+            ctx.json(plans.stream().map(Plan::getCourses).toList());
         } catch (Exception e) {
             ctx.status(500).result("Error processing request: " + e.getMessage());
         }

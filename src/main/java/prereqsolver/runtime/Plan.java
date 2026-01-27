@@ -45,6 +45,10 @@ public class Plan implements Comparable<Plan> {
         return courseSet.contains(course);
     }
 
+    public List<String> getCourses() {
+        return courses;
+    }
+
     public HashSet<String> getCourseSet() {
         return courseSet;
     }
